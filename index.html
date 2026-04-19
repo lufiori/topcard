@@ -14,7 +14,7 @@ body {
   padding-bottom: 260px;
 }
 
-h1 { font-size: 80px; }
+h1 { font-size: 30px; }
 
 .range { font-size: 60px; }
 
@@ -102,6 +102,14 @@ input {
   cursor: pointer;
 }
 
+button {
+  font-size: 30px;
+  padding: 15px 30px;
+  border-radius: 10px;
+  background: red;
+  color: white;
+}
+  
 .btn.segurar { background: red !important; }
 .btn:active { background: #555; }
 </style>
@@ -110,7 +118,7 @@ input {
 <body>
 
 <h1>Top Card</h1>
-
+<button onclick="fecharApp()">❌ Fechar</button>
 <div class="range">
   De <input id="min" type="number" value="1">
   até <input id="max" type="number" value="36">
@@ -292,6 +300,11 @@ botao.addEventListener("pointerup", () => {
   }
 });
 
+function fecharApp() {
+  window.close();
+  window.history.back();
+}
+  
 botao.addEventListener("pointerleave", () => {
   clearTimeout(tempoPressionado);
   botao.classList.remove("segurar");
