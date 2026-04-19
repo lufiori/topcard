@@ -14,13 +14,9 @@ body {
   padding-bottom: 260px;
 }
 
-h1 {
-  font-size: 80px;
-}
+h1 { font-size: 80px; }
 
-.range {
-  font-size: 60px;
-}
+.range { font-size: 60px; }
 
 input {
   width: 180px;
@@ -50,8 +46,20 @@ input {
   border-radius: 40px;
 }
 
+/* CORES */
 .par { background: blue; }
 .impar { background: green; }
+
+/* BRILHO */
+.brilho {
+  animation: brilhoPulse 0.8s ease-in-out 3;
+}
+
+@keyframes brilhoPulse {
+  0% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+  50% { box-shadow: 0 0 60px rgba(255,255,255,0.9); }
+  100% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+}
 
 #tempo {
   margin-top: 80px;
@@ -59,7 +67,6 @@ input {
   font-weight: bold;
 }
 
-/* CONTROLES */
 .controles {
   margin-top: 40px;
   font-size: 50px;
@@ -80,7 +87,7 @@ input {
   font-weight: bold;
 }
 
-/* BOTÃO GIGANTE */
+/* BOTÃO */
 .btn {
   position: fixed;
   bottom: 0;
@@ -95,13 +102,8 @@ input {
   cursor: pointer;
 }
 
-.btn.segurar {
-  background: red !important;
-}
-
-.btn:active {
-  background: #555;
-}
+.btn.segurar { background: red !important; }
+.btn:active { background: #555; }
 </style>
 </head>
 
@@ -135,12 +137,19 @@ input {
 <script>
 let sorteando = false;
 let segundos = 0;
-let pausado = false;
+let pausado = true;
+let iniciou = false;
 
 /* SORTEIO */
 function sortear() {
   if (sorteando) return;
   sorteando = true;
+
+  // 👇 começa o tempo no primeiro sorteio
+  if (!iniciou) {
+    iniciou = true;
+    pausado = false;
+  }
 
   let min = parseInt(document.getElementById('min').value);
   let max = parseInt(document.getElementById('max').value);
@@ -170,15 +179,19 @@ function sortear() {
       forma.innerText = resultadoFinal;
       forma.className = "forma " + (resultadoFinal % 2 === 0 ? "par" : "impar");
 
+      // ✨ brilho
+      forma.classList.add("brilho");
+      setTimeout(() => forma.classList.remove("brilho"), 2500);
+
       sorteando = false;
     }
 
   }, 60);
 }
 
-/* CRONÔMETRO */
+/* TEMPO */
 function atualizarTempo() {
-  if (pausado) return;
+  if (pausado || !iniciou) return;
 
   segundos++;
 
@@ -193,7 +206,7 @@ function atualizarTempo() {
 
 setInterval(atualizarTempo, 1000);
 
-/* PAUSAR */
+/* PAUSA */
 function toggleTempo() {
   pausado = !pausado;
 }
@@ -222,11 +235,21 @@ function encerrar() {
   }
 
   resumo.innerText = texto;
+
+  // 🔥 zera e pausa
+  segundos = 0;
+  pausado = true;
+  iniciou = false;
+
+  document.getElementById("tempo").innerText = "Tempo de jogo: 00:00";
 }
 
-/* RESET TOTAL */
+/* RESET */
 function resetarTudo() {
   segundos = 0;
+  pausado = true;
+  iniciou = false;
+
   document.getElementById("tempo").innerText = "Tempo de jogo: 00:00";
 
   document.getElementById("forma").innerText = "-";
